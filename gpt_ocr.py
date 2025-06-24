@@ -3,7 +3,7 @@ import base64
 import json
 import sqlite3
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import cv2
@@ -454,97 +454,13 @@ class GPT4VisionMeterReader:
                 reading = result.get('meter_reading')
                 extracted_date = result.get('date')
                 extracted_time = result.get('time')
+                extracted_serial = result.get('meter_serial')
                 
                 if not reading:
                     continue
                 
-                # Normalize reading by removing leading zeros and converting to numeric
-                try:
-                    # Remove leading zeros and convert to numeric
-                    normalized_reading = str(reading).lstrip('0')
-                    if not normalized_reading:  # If all zeros, keep as 0
-                        normalized_reading = '0'
-                    numeric_reading = float(normalized_reading.replace(',', ''))
-                except (ValueError, TypeError):
-                    continue
-                
-                # Try multiple comparison strategies
-                matches = []
-                
-                # Strategy 1: Exact string match (handles leading zeros)
-                cursor.execute("""
-                    SELECT meter_serial_number, meter_reading, reading_unit, 
-                           reading_date, 0 as difference
-                    FROM meter_readings 
-                    WHERE meter_reading = ?
-                    ORDER BY reading_date DESC 
-                    LIMIT 5
-                """, (str(reading),))
-                
-                exact_matches = cursor.fetchall()
-                matches.extend(exact_matches)
-                
-                # Strategy 2: Try with leading zero if reading doesn't have one
-                if not str(reading).startswith('0'):
-                    cursor.execute("""
-                        SELECT meter_serial_number, meter_reading, reading_unit, 
-                               reading_date, 0 as difference
-                        FROM meter_readings 
-                        WHERE meter_reading = ?
-                        ORDER BY reading_date DESC 
-                        LIMIT 5
-                    """, ('0' + str(reading),))
-                    
-                    leading_zero_matches = cursor.fetchall()
-                    matches.extend(leading_zero_matches)
-                
-                # Strategy 3: Try without leading zero if reading has one
-                if str(reading).startswith('0'):
-                    cursor.execute("""
-                        SELECT meter_serial_number, meter_reading, reading_unit, 
-                               reading_date, 0 as difference
-                        FROM meter_readings 
-                        WHERE meter_reading = ?
-                        ORDER BY reading_date DESC 
-                        LIMIT 5
-                    """, (str(reading).lstrip('0'),))
-                    
-                    no_leading_zero_matches = cursor.fetchall()
-                    matches.extend(no_leading_zero_matches)
-                
-                # Strategy 4: Numeric match (convert to numeric for comparison)
-                try:
-                    numeric_reading = float(str(reading).replace(',', ''))
-                    cursor.execute("""
-                        SELECT meter_serial_number, meter_reading, reading_unit, 
-                               reading_date, ABS(CAST(meter_reading AS REAL) - ?) as difference
-                        FROM meter_readings 
-                        WHERE CAST(meter_reading AS REAL) = ?
-                        ORDER BY reading_date DESC 
-                        LIMIT 5
-                    """, (numeric_reading, numeric_reading))
-                    
-                    numeric_matches = cursor.fetchall()
-                    matches.extend(numeric_matches)
-                except (ValueError, TypeError):
-                    pass
-                
-                # Strategy 5: Tolerance-based match (for close readings)
-                try:
-                    numeric_reading = float(str(reading).replace(',', ''))
-                    cursor.execute("""
-                        SELECT meter_serial_number, meter_reading, reading_unit, 
-                               reading_date, ABS(CAST(meter_reading AS REAL) - ?) as difference
-                        FROM meter_readings 
-                        WHERE ABS(CAST(meter_reading AS REAL) - ?) <= ?
-                        ORDER BY difference ASC 
-                        LIMIT 5
-                    """, (numeric_reading, numeric_reading, numeric_reading * tolerance_percentage))
-                    
-                    tolerance_matches = cursor.fetchall()
-                    matches.extend(tolerance_matches)
-                except (ValueError, TypeError):
-                    pass
+                # Use enhanced fuzzy matching
+                matches = self._enhanced_fuzzy_matching(cursor, reading, extracted_serial, extracted_date, tolerance_percentage)
                 
                 # Remove duplicates while preserving order
                 seen = set()
@@ -572,7 +488,8 @@ class GPT4VisionMeterReader:
                             "db_date": match[3],
                             "difference": match[4],
                             "percentage_error": (match[4] / float(match[1])) * 100 if float(match[1]) > 0 else 0,
-                            "date_comparison": self._compare_dates(extracted_date, match[3])
+                            "date_comparison": self._compare_dates(extracted_date, match[3]),
+                            "match_type": match[5] if len(match) > 5 else "exact"
                         }
                         for match in unique_matches
                     ],
@@ -589,6 +506,208 @@ class GPT4VisionMeterReader:
         except Exception as e:
             logger.error(f"Database validation error: {e}")
             return []
+    
+    def _enhanced_fuzzy_matching(self, cursor, reading: str, extracted_serial: str, extracted_date: str, tolerance_percentage: float) -> List[tuple]:
+        """
+        Enhanced fuzzy matching with hierarchical fallback strategies
+        
+        Args:
+            cursor: Database cursor
+            reading: Extracted meter reading
+            extracted_serial: Extracted meter serial number
+            extracted_date: Extracted date
+            tolerance_percentage: Tolerance for numeric matching
+            
+        Returns:
+            List of matches with match type information
+        """
+        matches = []
+        
+        # Strategy 1: Exact reading + exact serial match (highest priority)
+        if extracted_serial:
+            cursor.execute("""
+                SELECT meter_serial_number, meter_reading, reading_unit, 
+                       reading_date, 0 as difference, 'exact_serial' as match_type
+                FROM meter_readings 
+                WHERE meter_reading = ? AND meter_serial_number = ?
+                ORDER BY reading_date DESC 
+                LIMIT 5
+            """, (str(reading), extracted_serial))
+            
+            exact_serial_matches = cursor.fetchall()
+            matches.extend(exact_serial_matches)
+            
+            # If we found exact serial matches, return them (highest confidence)
+            if exact_serial_matches:
+                return matches
+        
+        # Strategy 2: Exact reading + partial serial match (serial is prefix of DB serial)
+        if extracted_serial:
+            cursor.execute("""
+                SELECT meter_serial_number, meter_reading, reading_unit, 
+                       reading_date, 0 as difference, 'partial_serial' as match_type
+                FROM meter_readings 
+                WHERE meter_reading = ? AND meter_serial_number LIKE ?
+                ORDER BY reading_date DESC 
+                LIMIT 5
+            """, (str(reading), f"{extracted_serial}%"))
+            
+            partial_serial_matches = cursor.fetchall()
+            matches.extend(partial_serial_matches)
+            
+            # If we found partial serial matches, return them (high confidence)
+            if partial_serial_matches:
+                return matches
+        
+        # Strategy 3: Exact reading + date/time validation (if date is available)
+        if extracted_date:
+            # Try to find matches with same reading and similar date
+            try:
+                # Parse extracted date
+                extracted_dt = datetime.fromisoformat(extracted_date.replace('Z', '+00:00'))
+                
+                # Look for matches within 30 days
+                date_range_start = (extracted_dt - timedelta(days=30)).isoformat()
+                date_range_end = (extracted_dt + timedelta(days=30)).isoformat()
+                
+                cursor.execute("""
+                    SELECT meter_serial_number, meter_reading, reading_unit, 
+                           reading_date, 0 as difference, 'date_match' as match_type
+                    FROM meter_readings 
+                    WHERE meter_reading = ? AND reading_date BETWEEN ? AND ?
+                    ORDER BY reading_date DESC 
+                    LIMIT 5
+                """, (str(reading), date_range_start, date_range_end))
+                
+                date_matches = cursor.fetchall()
+                matches.extend(date_matches)
+                
+                # If we found date matches, return them (good confidence)
+                if date_matches:
+                    return matches
+            except Exception as e:
+                logger.warning(f"Date parsing error in fuzzy matching: {e}")
+        
+        # Strategy 4: Exact reading match (original logic)
+        cursor.execute("""
+            SELECT meter_serial_number, meter_reading, reading_unit, 
+                   reading_date, 0 as difference, 'exact_reading' as match_type
+            FROM meter_readings 
+            WHERE meter_reading = ?
+            ORDER BY reading_date DESC 
+            LIMIT 5
+        """, (str(reading),))
+        
+        exact_matches = cursor.fetchall()
+        matches.extend(exact_matches)
+        
+        # Strategy 5: Try with leading zero if reading doesn't have one
+        if not str(reading).startswith('0'):
+            cursor.execute("""
+                SELECT meter_serial_number, meter_reading, reading_unit, 
+                       reading_date, 0 as difference, 'leading_zero' as match_type
+                FROM meter_readings 
+                WHERE meter_reading = ?
+                ORDER BY reading_date DESC 
+                LIMIT 5
+            """, ('0' + str(reading),))
+            
+            leading_zero_matches = cursor.fetchall()
+            matches.extend(leading_zero_matches)
+        
+        # Strategy 6: Try without leading zero if reading has one
+        if str(reading).startswith('0'):
+            cursor.execute("""
+                SELECT meter_serial_number, meter_reading, reading_unit, 
+                       reading_date, 0 as difference, 'no_leading_zero' as match_type
+                FROM meter_readings 
+                WHERE meter_reading = ?
+                ORDER BY reading_date DESC 
+                LIMIT 5
+            """, (str(reading).lstrip('0'),))
+            
+            no_leading_zero_matches = cursor.fetchall()
+            matches.extend(no_leading_zero_matches)
+        
+        # Strategy 7: Numeric match (convert to numeric for comparison)
+        try:
+            numeric_reading = float(str(reading).replace(',', ''))
+            cursor.execute("""
+                SELECT meter_serial_number, meter_reading, reading_unit, 
+                       reading_date, ABS(CAST(meter_reading AS REAL) - ?) as difference, 'numeric' as match_type
+                FROM meter_readings 
+                WHERE CAST(meter_reading AS REAL) = ?
+                ORDER BY reading_date DESC 
+                LIMIT 5
+            """, (numeric_reading, numeric_reading))
+            
+            numeric_matches = cursor.fetchall()
+            matches.extend(numeric_matches)
+        except (ValueError, TypeError):
+            pass
+        
+        # Strategy 8: Tolerance-based match (for close readings)
+        try:
+            numeric_reading = float(str(reading).replace(',', ''))
+            cursor.execute("""
+                SELECT meter_serial_number, meter_reading, reading_unit, 
+                       reading_date, ABS(CAST(meter_reading AS REAL) - ?) as difference, 'tolerance' as match_type
+                FROM meter_readings 
+                WHERE ABS(CAST(meter_reading AS REAL) - ?) <= ?
+                ORDER BY difference ASC 
+                LIMIT 5
+            """, (numeric_reading, numeric_reading, numeric_reading * tolerance_percentage))
+            
+            tolerance_matches = cursor.fetchall()
+            matches.extend(tolerance_matches)
+        except (ValueError, TypeError):
+            pass
+        
+        # Strategy 9: Partial match fallback (when no exact reading matches)
+        # This provides graceful handling for cases where extracted reading doesn't exist in DB
+        if not matches:
+            partial_matches = []
+            
+            # Try partial serial match with any reading
+            if extracted_serial:
+                cursor.execute("""
+                    SELECT meter_serial_number, meter_reading, reading_unit, 
+                           reading_date, 999 as difference, 'partial_serial_fallback' as match_type
+                    FROM meter_readings 
+                    WHERE meter_serial_number LIKE ?
+                    ORDER BY reading_date DESC 
+                    LIMIT 3
+                """, (f"{extracted_serial}%",))
+                
+                partial_serial_fallback = cursor.fetchall()
+                partial_matches.extend(partial_serial_fallback)
+            
+            # Try date-based match with any reading (if date is available)
+            if extracted_date and not partial_matches:
+                try:
+                    extracted_dt = datetime.fromisoformat(extracted_date.replace('Z', '+00:00'))
+                    date_range_start = (extracted_dt - timedelta(days=30)).isoformat()
+                    date_range_end = (extracted_dt + timedelta(days=30)).isoformat()
+                    
+                    cursor.execute("""
+                        SELECT meter_serial_number, meter_reading, reading_unit, 
+                               reading_date, 999 as difference, 'date_fallback' as match_type
+                        FROM meter_readings 
+                        WHERE reading_date BETWEEN ? AND ?
+                        ORDER BY reading_date DESC 
+                        LIMIT 3
+                    """, (date_range_start, date_range_end))
+                    
+                    date_fallback = cursor.fetchall()
+                    partial_matches.extend(date_fallback)
+                except Exception as e:
+                    logger.warning(f"Date parsing error in fallback matching: {e}")
+            
+            # If we found partial matches, add them with a note
+            if partial_matches:
+                matches.extend(partial_matches)
+        
+        return matches
     
     def _compare_dates(self, extracted_date: str, db_date: str) -> Dict:
         """
