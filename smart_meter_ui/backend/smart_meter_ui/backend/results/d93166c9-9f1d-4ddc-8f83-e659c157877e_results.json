@@ -1,0 +1,173 @@
+{
+  "extraction_result": {
+    "meter_reading": "1032763",
+    "meter_type": "electricity",
+    "meter_serial": "90225901",
+    "units": "kWh",
+    "display_type": "digital",
+    "date": "2022-10-04",
+    "time": "10:27:06",
+    "timestamp_format": "DD-MMM-YY HH:MM:SS",
+    "timestamp_source": "camera_overlay",
+    "additional_timestamps": [],
+    "additional_text": "Property of: MSEB, SCROLL, CML-80",
+    "confidence": 9,
+    "date_time_confidence": 9,
+    "extraction_notes": "The date and time appear to be from a camera overlay, not the meter itself.",
+    "temporal_analysis": "The only date/time information visible is from the camera overlay, indicating when the photo was taken.",
+    "parsed_date": "2022-10-04T00:00:00",
+    "date_format_used": "%Y-%m-%d",
+    "parsed_time": "10:27:06",
+    "time_format_used": "%H:%M:%S",
+    "combined_datetime": "2022-10-04T10:27:06",
+    "image_path": "smart_meter_ui/backend/uploads/d93166c9-9f1d-4ddc-8f83-e659c157877e.png",
+    "extraction_timestamp": "2025-06-25T00:58:32.199019",
+    "api_model": "gpt-4o",
+    "processing_tokens": 1069,
+    "raw_response": "```json\n{\n    \"meter_reading\": \"1032763\",\n    \"meter_type\": \"electricity\",\n    \"meter_serial\": \"90225901\",\n    \"units\": \"kWh\",\n    \"display_type\": \"digital\",\n    \"date\": \"2022-10-04\",\n    \"time\": \"10:27:06\",\n    \"timestamp_format\": \"DD-MMM-YY HH:MM:SS\",\n    \"timestamp_source\": \"camera_overlay\",\n    \"additional_timestamps\": [],\n    \"additional_text\": \"Property of: MSEB, SCROLL, CML-80\",\n    \"confidence\": 9,\n    \"date_time_confidence\": 9,\n    \"extraction_notes\": \"The date and time appear to be from a camera overlay, not the meter itself.\",\n    \"temporal_analysis\": \"The only date/time information visible is from the camera overlay, indicating when the photo was taken.\"\n}\n```",
+    "configuration": {
+      "detail_level": "high",
+      "max_tokens": 500,
+      "temperature": 0.1
+    }
+  },
+  "validation_results": [
+    {
+      "image_path": "smart_meter_ui/backend/uploads/d93166c9-9f1d-4ddc-8f83-e659c157877e.png",
+      "gpt4_reading": "1032763",
+      "gpt4_confidence": 9,
+      "gpt4_date": "2022-10-04",
+      "gpt4_time": "10:27:06",
+      "gpt4_datetime_confidence": 9,
+      "database_matches": 3,
+      "closest_matches": [
+        {
+          "db_serial": "01816777",
+          "db_reading": "014673",
+          "db_unit": "kWh",
+          "db_date": "2022-10-14 10:17:12",
+          "difference": 999,
+          "percentage_error": 6.808423635248416,
+          "date_comparison": {
+            "status": "compared",
+            "days_difference": 11,
+            "match_level": "different"
+          },
+          "match_type": "date_fallback"
+        },
+        {
+          "db_serial": "01809383",
+          "db_reading": "039672",
+          "db_unit": "kWh",
+          "db_date": "2022-10-14 10:15:35",
+          "difference": 999,
+          "percentage_error": 2.5181488203266786,
+          "date_comparison": {
+            "status": "compared",
+            "days_difference": 11,
+            "match_level": "different"
+          },
+          "match_type": "date_fallback"
+        },
+        {
+          "db_serial": "01810142",
+          "db_reading": "018289",
+          "db_unit": "kWh",
+          "db_date": "2022-10-04 22:10:40",
+          "difference": 999,
+          "percentage_error": 5.462299743014927,
+          "date_comparison": {
+            "status": "compared",
+            "days_difference": 1,
+            "match_level": "close"
+          },
+          "match_type": "date_fallback"
+        }
+      ],
+      "validation_status": "match",
+      "temporal_validation": {
+        "has_extracted_datetime": true,
+        "datetime_source": "camera_overlay",
+        "consistency_score": 5,
+        "notes": [
+          "Extracted date/time differs significantly from database"
+        ],
+        "date_comparison": {
+          "status": "compared",
+          "days_difference": 10,
+          "match_level": "different"
+        }
+      },
+      "extraction_data": {
+        "meter_reading": "1032763",
+        "meter_type": "electricity",
+        "meter_serial": "90225901",
+        "units": "kWh",
+        "display_type": "digital",
+        "date": "2022-10-04",
+        "time": "10:27:06",
+        "timestamp_format": "DD-MMM-YY HH:MM:SS",
+        "timestamp_source": "camera_overlay",
+        "additional_timestamps": [],
+        "additional_text": "Property of: MSEB, SCROLL, CML-80",
+        "confidence": 9,
+        "date_time_confidence": 9,
+        "extraction_notes": "The date and time appear to be from a camera overlay, not the meter itself.",
+        "temporal_analysis": "The only date/time information visible is from the camera overlay, indicating when the photo was taken.",
+        "parsed_date": "2022-10-04T00:00:00",
+        "date_format_used": "%Y-%m-%d",
+        "parsed_time": "10:27:06",
+        "time_format_used": "%H:%M:%S",
+        "combined_datetime": "2022-10-04T10:27:06",
+        "image_path": "smart_meter_ui/backend/uploads/d93166c9-9f1d-4ddc-8f83-e659c157877e.png",
+        "extraction_timestamp": "2025-06-25T00:58:32.199019",
+        "api_model": "gpt-4o",
+        "processing_tokens": 1069,
+        "raw_response": "```json\n{\n    \"meter_reading\": \"1032763\",\n    \"meter_type\": \"electricity\",\n    \"meter_serial\": \"90225901\",\n    \"units\": \"kWh\",\n    \"display_type\": \"digital\",\n    \"date\": \"2022-10-04\",\n    \"time\": \"10:27:06\",\n    \"timestamp_format\": \"DD-MMM-YY HH:MM:SS\",\n    \"timestamp_source\": \"camera_overlay\",\n    \"additional_timestamps\": [],\n    \"additional_text\": \"Property of: MSEB, SCROLL, CML-80\",\n    \"confidence\": 9,\n    \"date_time_confidence\": 9,\n    \"extraction_notes\": \"The date and time appear to be from a camera overlay, not the meter itself.\",\n    \"temporal_analysis\": \"The only date/time information visible is from the camera overlay, indicating when the photo was taken.\"\n}\n```",
+        "configuration": {
+          "detail_level": "high",
+          "max_tokens": 500,
+          "temperature": 0.1
+        }
+      }
+    }
+  ],
+  "accuracy_report": {
+    "processing_summary": {
+      "total_images": 1,
+      "successful_extractions": 1,
+      "extraction_rate": 100.0,
+      "datetime_extractions": 1,
+      "datetime_extraction_rate": 100.0,
+      "successful_datetime": 1
+    },
+    "accuracy_metrics": {
+      "exact_matches": 0,
+      "close_matches": 0,
+      "exact_accuracy": 0.0,
+      "close_accuracy": 0.0,
+      "average_confidence": 9.0,
+      "average_datetime_confidence": 9.0
+    },
+    "temporal_analysis": {
+      "datetime_extraction_success_rate": 100.0,
+      "average_temporal_consistency": 5.0,
+      "temporal_validation_available": 1
+    },
+    "error_analysis": {
+      "mean_percentage_error": 6.808423635248416,
+      "max_percentage_error": 6.808423635248416,
+      "std_percentage_error": 0.0
+    },
+    "configuration": {
+      "model": "gpt-4o",
+      "close_match_threshold": 1.0,
+      "validation_tolerance": "0.1",
+      "enhanced_datetime_extraction": true
+    },
+    "recommendations": [
+      "Excellent performance in both reading and date/time extraction!"
+    ]
+  },
+  "processing_timestamp": "2025-06-25T00:58:32.201351"
+}
