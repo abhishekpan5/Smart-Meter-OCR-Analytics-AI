@@ -1,0 +1,129 @@
+{
+  "extraction_result": {
+    "meter_reading": "14673",
+    "meter_type": "unknown",
+    "date": null,
+    "time": null,
+    "timestamp_source": "fallback_extraction",
+    "confidence": 5,
+    "date_time_confidence": 3,
+    "extraction_notes": "Fallback extraction used due to JSON parsing failure",
+    "raw_response": "```json\n{\n    \"meter_reading\": \"14673\",\n    \"meter_type\": \"electricity\",\n    \"meter_serial\": \"01816777\",\n    \"units\": \"kWh\",\n    \"display_type\": \"digital\",\n    \"date\": null,\n    \"time\": null,\n    \"timestamp_format\": null,\n    \"timestamp_source\": null,\n    \"additional_timestamps\": [],\n    \"additional_text\": \"Smart Meter Validation, AI Extracted Data, OCR Reading\",\n    \"confidence\": 9,\n    \"date_time_confidence\": 1,\n    \"extraction_notes\": \"No date or time information is visible on the meter display.\",\n    \"temporal_analysis\": \"No date/time elements found on the meter display.\"\n}\n```",
+    "image_path": "smart_meter_ui/backend/uploads/5d44eb86-eaf0-41bf-a4d7-8014f5065e42.JPG",
+    "extraction_timestamp": "2025-06-24T21:34:37.228844",
+    "api_model": "gpt-4o",
+    "processing_tokens": 1538,
+    "configuration": {
+      "detail_level": "high",
+      "max_tokens": 500,
+      "temperature": 0.1
+    }
+  },
+  "validation_results": [
+    {
+      "image_path": "smart_meter_ui/backend/uploads/5d44eb86-eaf0-41bf-a4d7-8014f5065e42.JPG",
+      "gpt4_reading": "14673",
+      "gpt4_confidence": 5,
+      "gpt4_date": null,
+      "gpt4_time": null,
+      "gpt4_datetime_confidence": 3,
+      "database_matches": 2,
+      "closest_matches": [
+        {
+          "db_serial": "01816777",
+          "db_reading": "014673",
+          "db_unit": "kWh",
+          "db_date": "2022-10-14 10:15:35",
+          "difference": 0,
+          "percentage_error": 0.0,
+          "date_comparison": {
+            "status": "missing_data",
+            "comparison": null
+          }
+        },
+        {
+          "db_serial": "01815060",
+          "db_reading": "016060",
+          "db_unit": "kWh",
+          "db_date": "2022-10-04 10:24:15",
+          "difference": 1387.0,
+          "percentage_error": 8.636363636363637,
+          "date_comparison": {
+            "status": "missing_data",
+            "comparison": null
+          }
+        }
+      ],
+      "validation_status": "match",
+      "temporal_validation": {
+        "has_extracted_datetime": false,
+        "datetime_source": "fallback_extraction",
+        "consistency_score": 0,
+        "notes": []
+      },
+      "extraction_data": {
+        "meter_reading": "14673",
+        "meter_type": "unknown",
+        "date": null,
+        "time": null,
+        "timestamp_source": "fallback_extraction",
+        "confidence": 5,
+        "date_time_confidence": 3,
+        "extraction_notes": "Fallback extraction used due to JSON parsing failure",
+        "raw_response": "```json\n{\n    \"meter_reading\": \"14673\",\n    \"meter_type\": \"electricity\",\n    \"meter_serial\": \"01816777\",\n    \"units\": \"kWh\",\n    \"display_type\": \"digital\",\n    \"date\": null,\n    \"time\": null,\n    \"timestamp_format\": null,\n    \"timestamp_source\": null,\n    \"additional_timestamps\": [],\n    \"additional_text\": \"Smart Meter Validation, AI Extracted Data, OCR Reading\",\n    \"confidence\": 9,\n    \"date_time_confidence\": 1,\n    \"extraction_notes\": \"No date or time information is visible on the meter display.\",\n    \"temporal_analysis\": \"No date/time elements found on the meter display.\"\n}\n```",
+        "image_path": "smart_meter_ui/backend/uploads/5d44eb86-eaf0-41bf-a4d7-8014f5065e42.JPG",
+        "extraction_timestamp": "2025-06-24T21:34:37.228844",
+        "api_model": "gpt-4o",
+        "processing_tokens": 1538,
+        "configuration": {
+          "detail_level": "high",
+          "max_tokens": 500,
+          "temperature": 0.1
+        }
+      }
+    }
+  ],
+  "accuracy_report": {
+    "processing_summary": {
+      "total_images": 1,
+      "successful_extractions": 1,
+      "extraction_rate": 100.0,
+      "datetime_extractions": 0,
+      "datetime_extraction_rate": 0.0,
+      "successful_datetime": 0
+    },
+    "accuracy_metrics": {
+      "exact_matches": 1,
+      "close_matches": 0,
+      "exact_accuracy": 100.0,
+      "close_accuracy": 100.0,
+      "average_confidence": 5.0,
+      "average_datetime_confidence": 3.0
+    },
+    "temporal_analysis": {
+      "datetime_extraction_success_rate": 0.0,
+      "average_temporal_consistency": 0.0,
+      "temporal_validation_available": 1
+    },
+    "error_analysis": {
+      "mean_percentage_error": 0.0,
+      "max_percentage_error": 0.0,
+      "std_percentage_error": 0.0
+    },
+    "configuration": {
+      "model": "gpt-4o",
+      "close_match_threshold": 1.0,
+      "validation_tolerance": "0.1",
+      "enhanced_datetime_extraction": true
+    },
+    "recommendations": [
+      "Review images with low confidence scores manually",
+      "Consider combining GPT-4 Vision with traditional OCR for consensus",
+      "Date/time extraction rate is low - ensure images include timestamp displays",
+      "Consider capturing images that show the meter's built-in date/time display",
+      "Date/time extraction confidence is low - review timestamp visibility in images",
+      "Ensure adequate lighting and focus on date/time display areas"
+    ]
+  },
+  "processing_timestamp": "2025-06-24T21:34:37.230780"
+}

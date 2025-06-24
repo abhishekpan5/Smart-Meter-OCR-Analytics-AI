@@ -1,0 +1,157 @@
+{
+  "extraction_result": {
+    "meter_reading": "014673",
+    "meter_type": "electricity",
+    "meter_serial": "01816777",
+    "units": "kWh",
+    "display_type": "LCD",
+    "date": "2022-10-04",
+    "time": "10:17:12",
+    "timestamp_format": "DD-MMM-YY HH:MM:SS",
+    "timestamp_source": "camera_overlay",
+    "additional_timestamps": [],
+    "additional_text": "Property of: MSEDCL, IS13779, 30 Amp, 3200 imp/kWh",
+    "confidence": 9,
+    "date_time_confidence": 9,
+    "extraction_notes": "The date and time appear to be from a camera overlay, not the meter itself.",
+    "temporal_analysis": "The only date and time information visible is from the camera overlay, indicating when the photo was taken.",
+    "parsed_date": "2022-10-04T00:00:00",
+    "date_format_used": "%Y-%m-%d",
+    "parsed_time": "10:17:12",
+    "time_format_used": "%H:%M:%S",
+    "combined_datetime": "2022-10-04T10:17:12",
+    "image_path": "smart_meter_ui/backend/uploads/8a2fd394-b26b-403b-9e51-5bb9ba6d87cc.JPG",
+    "extraction_timestamp": "2025-06-24T21:51:33.361653",
+    "api_model": "gpt-4o",
+    "processing_tokens": 1076,
+    "raw_response": "```json\n{\n    \"meter_reading\": \"014673\",\n    \"meter_type\": \"electricity\",\n    \"meter_serial\": \"01816777\",\n    \"units\": \"kWh\",\n    \"display_type\": \"LCD\",\n    \"date\": \"2022-10-04\",\n    \"time\": \"10:17:12\",\n    \"timestamp_format\": \"DD-MMM-YY HH:MM:SS\",\n    \"timestamp_source\": \"camera_overlay\",\n    \"additional_timestamps\": [],\n    \"additional_text\": \"Property of: MSEDCL, IS13779, 30 Amp, 3200 imp/kWh\",\n    \"confidence\": 9,\n    \"date_time_confidence\": 9,\n    \"extraction_notes\": \"The date and time appear to be from a camera overlay, not the meter itself.\",\n    \"temporal_analysis\": \"The only date and time information visible is from the camera overlay, indicating when the photo was taken.\"\n}\n```",
+    "configuration": {
+      "detail_level": "high",
+      "max_tokens": 500,
+      "temperature": 0.1
+    }
+  },
+  "validation_results": [
+    {
+      "image_path": "smart_meter_ui/backend/uploads/8a2fd394-b26b-403b-9e51-5bb9ba6d87cc.JPG",
+      "gpt4_reading": "014673",
+      "gpt4_confidence": 9,
+      "gpt4_date": "2022-10-04",
+      "gpt4_time": "10:17:12",
+      "gpt4_datetime_confidence": 9,
+      "database_matches": 2,
+      "closest_matches": [
+        {
+          "db_serial": "01816777",
+          "db_reading": "014673",
+          "db_unit": "kWh",
+          "db_date": "2022-10-14 10:15:35",
+          "difference": 0,
+          "percentage_error": 0.0,
+          "date_comparison": {
+            "status": "compared",
+            "days_difference": 11,
+            "match_level": "different"
+          }
+        },
+        {
+          "db_serial": "01815060",
+          "db_reading": "016060",
+          "db_unit": "kWh",
+          "db_date": "2022-10-04 10:24:15",
+          "difference": 1387.0,
+          "percentage_error": 8.636363636363637,
+          "date_comparison": {
+            "status": "compared",
+            "days_difference": 1,
+            "match_level": "close"
+          }
+        }
+      ],
+      "validation_status": "match",
+      "temporal_validation": {
+        "has_extracted_datetime": true,
+        "datetime_source": "camera_overlay",
+        "consistency_score": 5,
+        "notes": [
+          "Extracted date/time differs significantly from database"
+        ],
+        "date_comparison": {
+          "status": "compared",
+          "days_difference": 10,
+          "match_level": "different"
+        }
+      },
+      "extraction_data": {
+        "meter_reading": "014673",
+        "meter_type": "electricity",
+        "meter_serial": "01816777",
+        "units": "kWh",
+        "display_type": "LCD",
+        "date": "2022-10-04",
+        "time": "10:17:12",
+        "timestamp_format": "DD-MMM-YY HH:MM:SS",
+        "timestamp_source": "camera_overlay",
+        "additional_timestamps": [],
+        "additional_text": "Property of: MSEDCL, IS13779, 30 Amp, 3200 imp/kWh",
+        "confidence": 9,
+        "date_time_confidence": 9,
+        "extraction_notes": "The date and time appear to be from a camera overlay, not the meter itself.",
+        "temporal_analysis": "The only date and time information visible is from the camera overlay, indicating when the photo was taken.",
+        "parsed_date": "2022-10-04T00:00:00",
+        "date_format_used": "%Y-%m-%d",
+        "parsed_time": "10:17:12",
+        "time_format_used": "%H:%M:%S",
+        "combined_datetime": "2022-10-04T10:17:12",
+        "image_path": "smart_meter_ui/backend/uploads/8a2fd394-b26b-403b-9e51-5bb9ba6d87cc.JPG",
+        "extraction_timestamp": "2025-06-24T21:51:33.361653",
+        "api_model": "gpt-4o",
+        "processing_tokens": 1076,
+        "raw_response": "```json\n{\n    \"meter_reading\": \"014673\",\n    \"meter_type\": \"electricity\",\n    \"meter_serial\": \"01816777\",\n    \"units\": \"kWh\",\n    \"display_type\": \"LCD\",\n    \"date\": \"2022-10-04\",\n    \"time\": \"10:17:12\",\n    \"timestamp_format\": \"DD-MMM-YY HH:MM:SS\",\n    \"timestamp_source\": \"camera_overlay\",\n    \"additional_timestamps\": [],\n    \"additional_text\": \"Property of: MSEDCL, IS13779, 30 Amp, 3200 imp/kWh\",\n    \"confidence\": 9,\n    \"date_time_confidence\": 9,\n    \"extraction_notes\": \"The date and time appear to be from a camera overlay, not the meter itself.\",\n    \"temporal_analysis\": \"The only date and time information visible is from the camera overlay, indicating when the photo was taken.\"\n}\n```",
+        "configuration": {
+          "detail_level": "high",
+          "max_tokens": 500,
+          "temperature": 0.1
+        }
+      }
+    }
+  ],
+  "accuracy_report": {
+    "processing_summary": {
+      "total_images": 1,
+      "successful_extractions": 1,
+      "extraction_rate": 100.0,
+      "datetime_extractions": 1,
+      "datetime_extraction_rate": 100.0,
+      "successful_datetime": 1
+    },
+    "accuracy_metrics": {
+      "exact_matches": 1,
+      "close_matches": 0,
+      "exact_accuracy": 100.0,
+      "close_accuracy": 100.0,
+      "average_confidence": 9.0,
+      "average_datetime_confidence": 9.0
+    },
+    "temporal_analysis": {
+      "datetime_extraction_success_rate": 100.0,
+      "average_temporal_consistency": 5.0,
+      "temporal_validation_available": 1
+    },
+    "error_analysis": {
+      "mean_percentage_error": 0.0,
+      "max_percentage_error": 0.0,
+      "std_percentage_error": 0.0
+    },
+    "configuration": {
+      "model": "gpt-4o",
+      "close_match_threshold": 1.0,
+      "validation_tolerance": "0.1",
+      "enhanced_datetime_extraction": true
+    },
+    "recommendations": [
+      "Excellent performance in both reading and date/time extraction!"
+    ]
+  },
+  "processing_timestamp": "2025-06-24T21:51:33.365449"
+}

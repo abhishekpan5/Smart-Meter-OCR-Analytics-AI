@@ -1,0 +1,33 @@
+[
+  {
+    "image_path": "images/000090225651470522210.png",
+    "gpt4_reading": "014673",
+    "gpt4_confidence": 5,
+    "database_matches": 1,
+    "closest_matches": [
+      {
+        "db_reading": 14673,
+        "db_original": "14673",
+        "difference": 0.0,
+        "percentage_error": 0.0
+      }
+    ],
+    "validation_status": "match",
+    "extraction_data": {
+      "meter_reading": "014673",
+      "meter_type": "unknown",
+      "confidence": 5,
+      "extraction_notes": "Fallback extraction used due to JSON parsing failure",
+      "raw_response": "```json\n{\n    \"meter_reading\": \"014673\",\n    \"meter_type\": \"electricity\",\n    \"meter_serial\": \"01816777\",\n    \"units\": \"kWh\",\n    \"display_type\": \"digital\",\n    \"additional_text\": \"Property of: MSEDCL, IS13779, 240V, 30 Amp, 3200 imp/kWh\",\n    \"confidence\": 9,\n    \"extraction_notes\": \"The reading is clear and the meter type is indicated by the unit kWh. The serial number is visible below the display.\"\n}\n```",
+      "image_path": "images/000090225651470522210.png",
+      "extraction_timestamp": "2025-06-24T19:29:16.948040",
+      "api_model": "gpt-4o",
+      "processing_tokens": 663,
+      "configuration": {
+        "detail_level": "high",
+        "max_tokens": 500,
+        "temperature": 0.1
+      }
+    }
+  }
+]

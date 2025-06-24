@@ -1,0 +1,29 @@
+{
+  "processing_summary": {
+    "total_images": 1,
+    "successful_extractions": 1,
+    "extraction_rate": 100.0
+  },
+  "accuracy_metrics": {
+    "exact_matches": 1,
+    "close_matches": 0,
+    "exact_accuracy": 100.0,
+    "close_accuracy": 100.0,
+    "average_confidence": 5.0
+  },
+  "error_analysis": {
+    "mean_percentage_error": 0.0,
+    "max_percentage_error": 0.0,
+    "std_percentage_error": 0.0
+  },
+  "configuration": {
+    "model": "gpt-4o",
+    "close_match_threshold": 1.0,
+    "validation_tolerance": "0.1"
+  },
+  "recommendations": [
+    "Review images with low confidence scores manually",
+    "Consider combining GPT-4 Vision with traditional OCR for consensus",
+    "Excellent performance! Consider this as primary OCR method"
+  ]
+}
